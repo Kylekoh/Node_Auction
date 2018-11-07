@@ -11,12 +11,14 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
+const sse = require('./sse');
+const webSocket = require('./socket');
 
 const app = express();
 sequelize.sync();
 passportConfig(passport);
 
-const sessionMiddleware =session({
+const sessionMiddleware = session({
     resave: false,
     saveUninitialized: false,
     secret: process.env.COOKIE_SECRET,
@@ -57,6 +59,9 @@ app.use((err, req, res) => {
     res.render('error');
 });
 
-app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), () => {
     console.log(app.get('port'), '번 포트에서 대기 중');
 })
+
+webSocket(server, app);
+sse(server);
