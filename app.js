@@ -18,6 +18,7 @@ const checkAuction = require('./checkAuction');
 const app = express();
 sequelize.sync();
 passportConfig(passport);
+checkAuction();
 
 const sessionMiddleware = session({
     resave: false,
